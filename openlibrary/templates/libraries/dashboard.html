@@ -27,8 +27,8 @@ $if ctx.user and ctx.user.is_admin():
     </div>
     <script type="text/javascript">
     <!--
-    \$().ready(Tabs);
-    \$().ready(function(){
+    ol.q.push(Tabs);
+    ol.q.push(function(){
         if(jQuery.support.opacity){
             \$("#library-tabs").tabs({fx:{opacity:'toggle'}});
         } else {

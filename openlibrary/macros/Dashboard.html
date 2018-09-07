@@ -1,6 +1,6 @@
 <script type="text/javascript">
-    \$().ready(flickrFeed);
-    \$().ready(flickrBuild);
+    ol.q.push(flickrFeed);
+    ol.q.push(flickrBuild);
 </script>
 
 <script id="source" type="text/javascript">
@@ -46,7 +46,7 @@
         points: { show: true }
     };
 
-    \$().ready(function() {
+    ol.q.push(function() {
         var plot = \$.plot(\$("#placeholder"), [d], options);
 
         var overview = \$.plot(\$("#overview"), [d], {

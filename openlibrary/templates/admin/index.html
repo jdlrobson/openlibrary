@@ -6,7 +6,7 @@ $ _x = ctx.setdefault('usergroup', 'admin')
 $:macros.Dashboard()
 $ stats = get_admin_stats()
 <script type="text/javascript">
-\$(function () {
+ol.q.push(function () {
     var edits = $:json_encode(counts.human_edits.get_counts(80, True));
     var members = $:json_encode(counts.members.get_counts(80, True));
     plot_tooltip_graph(\$("#editgraph"), edits, "edit(s) on");
@@ -116,7 +116,7 @@ $ stats = get_admin_stats()
 
     <h2>Record Counts</h2>
     <script type="text/javascript">
-      \$(function () {
+      ol.q.push(function () {
 	  plot_tooltip_graph (\$("#works_minigraph"), $:json_encode(counts.works.get_counts(150, True)), " works on ");
 	  plot_tooltip_graph (\$("#editions_minigraph"), $:json_encode(counts.editions.get_counts(150, True)), " editions on ");
 	  plot_tooltip_graph (\$("#ebooks_minigraph"), $:json_encode(counts.ebooks.get_counts(150, True)), " ebooks on ");

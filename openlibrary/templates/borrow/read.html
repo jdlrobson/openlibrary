@@ -30,10 +30,10 @@ $ subject_list = [('subjects', 20), ('places', 20), ('people', 10), ('times', 10
 
 
 <script type="text/javascript">
-<!--
-var page = new Subject($:json_encode(page), {pagesize: 12});
-page.filter.rand = $:json_encode(rand);
-//-->
+ol.q.push(function () {
+	window.page = new Subject($:json_encode(page), {pagesize: 12});
+	page.filter.rand = $:json_encode(rand);
+} );
 </script>
 
 $:render_template("lib/covers", page)
@@ -86,7 +86,7 @@ function resetCounts() {
 	}
 }
 
-\$(function() {
+ol.q.push(function() {
 	resetCounts();
 });
 </script>

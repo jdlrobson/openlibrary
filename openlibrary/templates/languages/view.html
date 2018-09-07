@@ -40,9 +40,9 @@ $ subject_list = [('subjects', 20), ('places', 20), ('people', 10), ('times', 10
 </div>
 
 <script type="text/javascript">
-<!--
-var page = new Subject($:json_encode(page));
-//-->
+ol.q.push( function () {
+    window.page = new Subject($:json_encode(page));
+} );
 </script>
 
 $:render_template("lib/covers", page)
@@ -60,7 +60,7 @@ $:render_template("lib/covers", page)
 
 <script type="text/javascript">
 <!--
-\$().ready(function() {
+ol.q.push(function() {
     var data = [{data: page.publishing_history}];
     var options = {
        series: {

@@ -3,7 +3,7 @@
  * OpenLibrary JavaScript and CSS outside the critical path.
  * 
  */
-(function(ol) {
+(function( ol, $ ) {
 
 /**
  * Load non-critical CSS file via JavaScript
@@ -36,4 +36,27 @@ ol.loadScript = function ( href ) {
     }
 };
 
-}(window.ol || { q: [], styles: [] }));
+/**
+ * Loads styles in the styles property
+ */
+ol.initStyles = function () {
+    var i;
+    for ( i = 0; i < this.styles.length; i++ ) {
+        ol.loadStyle( this.styles[i] );
+    }
+    this.styles = [];
+};
+
+/**
+ * Loads styles in the styles property
+ */
+ol.processQueue = function () {
+    var i;
+    for ( i = 0; i < this.q.length; i++ ) {
+        // Initialise queue
+        $( this.q[i] );
+    }
+    this.q = [];
+};
+
+}( window.ol, jQuery ) );

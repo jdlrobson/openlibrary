@@ -11,8 +11,7 @@ $def with (page)
 </div>
 
 <script type="text/javascript">
-<!--
-\$().ready(function(){
+ol.q.push(function(){
     \$('#editions span.count').each(function(i){
         \$(this).text(i+1);
         var myLength = \$(this).text().length;
@@ -51,7 +50,7 @@ $def with (page)
         };
     });
 });
-\$(window).load(function(){
+ol.q.push(function(){
    var rowCount = \$('#editions tbody tr').length;
     if (rowCount < 16) {
         \$('#editions').dataTable({
@@ -103,7 +102,7 @@ $ book_keys = []
 $# Added here instead of LoanStatus to avoid the js being bound to every item
 $# in a work's edition listing
 <script>
-\$(function() {
+ol.q.push(function() {
     \$('.return-book').submit(function(event) {
         if (!confirm("Really return this book?")) {
             event.preventDefault();

@@ -752,3 +752,10 @@ $().ready(function(){
     });
 });
 jQuery.fn.exists = function(){return jQuery(this).length>0;}
+
+//clear the ol.q and run all the inline scripts
+$( function () {
+    ol.initStyles();
+    // Load the initialisation scripts now that the client-side JS is loaded.
+    ol.processQueue();
+} );

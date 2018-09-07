@@ -6,17 +6,17 @@ $var title: $this_title
 $putctx("robots", "noindex,nofollow")
 
 <script type="text/javascript">
-ol.loadStyle('/static/build/books-edit.css');
-\$().ready(Tabs);
-\$().ready(function(){
+ol.styles.push('/static/build/books-edit.css');
+ol.q.push(Tabs);
+ol.q.push(function(){
     if(jQuery.support.opacity){
         \$("#tabsAddbook").tabs({fx:{opacity:'toggle'}});
     } else {
         \$("#tabsAddbook").tabs();
     };
 });
-\$().ready(boxPop);
-\$().ready(function(){\$("#coverPop").colorbox({inline:true, opacity:"0.5", href:"#addCover"});});
+ol.q.push(boxPop);
+ol.q.push(function(){\$("#coverPop").colorbox({inline:true, opacity:"0.5", href:"#addCover"});});
 
 function limitChars(textid, limit, infodiv) {
     var text = \$('#'+textid).val();
@@ -30,9 +30,9 @@ function limitChars(textid, limit, infodiv) {
         return true;
     }
 };
-\$().ready(function(){\$('#excerpt').keyup(function(){limitChars('excerpt', 2000, 'charLimit');});});
+ol.q.push(function(){\$('#excerpt').keyup(function(){limitChars('excerpt', 2000, 'charLimit');});});
 
-\$().ready(function() {
+ol.q.push(function() {
     var hash = document.location.hash || "#edition";
     var tab = hash.split("/")[0]
     var link = "#" + "link_" + tab.substr(1);
@@ -89,7 +89,7 @@ function limitChars(textid, limit, infodiv) {
 </div>
 
 <script type="text/javascript">
-\$(function() {
+ol.q.push(function() {
     \$("#authors").setup_multi_input_autocomplete(
         "input.author-autocomplete",
         render_author,

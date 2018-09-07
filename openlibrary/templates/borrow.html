@@ -148,9 +148,9 @@ $if wlsize > 0 and (not waiting_loan or waiting_loan['status'] != 'available'):
                 <p>Log in below, or <a href="/account/create">open a new account</a>.</p>
             </div>
             <script type="text/javascript">
-            \$().ready(validateForms);
-            \$().ready(setup_account_create);
-            \$().ready(function(){
+            ol.q.push(validateForms);
+            ol.q.push(setup_account_create);
+            ol.q.push(function(){
             \$('#username').keyup(function(){
                  var value = \$(this).val();
                  \$('#userUrl').addClass('darkgreen').text(value).css('font-weight','700');
@@ -300,7 +300,7 @@ function update_borrow_message(){
     update_borrow_message();
     \$(window).bind("ol.lists", update_borrow_message);
 });
-\$(function() {
+ol.q.push(function() {
     \$("a.submit").click(function() {
         \$(this).closest("form").submit();
     });

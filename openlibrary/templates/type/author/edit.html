@@ -5,14 +5,14 @@ $var title: $page.name
 $putctx("robots", "noindex,nofollow")
 
 <script type="text/javascript">
-\$().ready(function(){
+ol.q.push(function(){
     if(jQuery.support.opacity){
         \$("#tabsAddauthor").tabs({fx:{opacity:'toggle'}});
     } else {
         \$("#tabsAddauthor").tabs();
     };
 });
-\$().ready(function(){\$("#coverPop").colorbox({inline:true, opacity:"0.5", href:"#addCover"});});
+ol.q.push(function(){\$("#coverPop").colorbox({inline:true, opacity:"0.5", href:"#addCover"});});
 </script>
 
 <div id="contentHead">

@@ -19,7 +19,7 @@ $def show_plot():
         </div>
     </div>
     <script type="text/javascript">
-        \$(function () {
+        ol.q.push(function () {
             \$.plot("#loans-per-day", [
                 {
                     "data": $:json_encode(page.get_loans_per_day("bookreader")),
