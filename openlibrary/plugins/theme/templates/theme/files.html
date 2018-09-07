@@ -57,7 +57,7 @@ $jsdef render_select(files, pattern):
         }
     });
 
-    \$(function() {
+    window.q.push(function() {
         \$("input#pattern").keyup(function(e) {
             if (e.keyCode == 27) { // ESC
                 document.location.hash = "#";

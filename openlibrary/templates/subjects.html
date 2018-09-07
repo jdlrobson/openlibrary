@@ -110,7 +110,7 @@ function set_hash(data) {
     document.location.hash = hash;
 }
 
-\$().ready(function() {
+window.q.push(function() {
     var _hash = parse_hash();
 
     if (_hash.ebooks === 'true') {

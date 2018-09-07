@@ -26,9 +26,9 @@ $if status:
 
 <script type="text/javascript">
 <!--
-\$().ready(carousels);
-\$().ready(function(){\$('#popcovers').jcarousel();});
-\$(function() {
+window.q.push(carousels);
+window.q.push(function(){\$('#popcovers').jcarousel();});
+window.q.push(function() {
     parent.closeThrobber();
     \$("#form.addcover-form").submit(function(event) {
 

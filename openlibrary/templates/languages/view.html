@@ -60,7 +60,7 @@ $:render_template("lib/covers", page)
 
 <script type="text/javascript">
 <!--
-\$().ready(function() {
+window.q.push(function() {
     var data = [{data: page.publishing_history}];
     var options = {
        series: {

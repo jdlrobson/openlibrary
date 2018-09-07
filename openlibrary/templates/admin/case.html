@@ -6,7 +6,7 @@ $ all = query_param("all", "false")
 $ filter = query_param("filter", "new")
 
 <script type="text/javascript">
-\$(function() {
+window.q.push(function() {
     \$("#checkbox3").change(function() {
 	\$("#textarea").val($:json_encode(last_email));
     });

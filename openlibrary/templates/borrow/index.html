@@ -87,7 +87,7 @@ function resetCounts() {
 	}
 }
 
-\$(function() {
+window.q.push(function() {
 	resetCounts();
 });
 </script>
@@ -113,7 +113,7 @@ div.graph,div.chart{width:898px;height:180px;float:none;background-image:none;}
 
 <script type="text/javascript">
 
-\$(function () {
+window.q.push(function () {
     $# \$.plot("#loans-per-day", [$:json_encode(stats.get_loans_per_day())], {
         series: {
              bars: {

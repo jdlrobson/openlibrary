@@ -52,7 +52,7 @@ function setup_tooltip(selector, format_message) {
     });
 }
 
-\$(function () {
+window.q.push(function () {
     \$.plot("#loans-per-day", [
         {
             "data": $:json_encode(stats.get_loans_per_day("bookreader")),
@@ -169,7 +169,7 @@ function setup_tooltip(selector, format_message) {
     });
 });
 
-\$().ready(function() {
+window.q.push(function() {
     var hash = document.location.hash || "#edition";
     var link = "#" + "link_" + hash;
     \$(link).click();
