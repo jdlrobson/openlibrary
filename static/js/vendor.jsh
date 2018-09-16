@@ -63,3 +63,6 @@ function flickrFeed(){}
 function feedLoader() {}
 function validateForms(){}
 END
+
+# Add OpenLibrary initialisation code to the get things started.
+xcat $OLROOT/static/js/ol-init.js
