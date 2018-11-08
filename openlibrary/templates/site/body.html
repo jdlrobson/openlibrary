@@ -7,8 +7,13 @@ $ show_banners = bodyid != 'form'
 $if 'v2' in page:
   <body id="$bodyid">
     <script>
+        $# This determines whether we should support this browser.
+        $# // https://caniuse.com/#search=JSON
+        window.gradeA = !!(window.JSON);
         // Provide a signal that JS will load
-        document.body.className += ' client-js';
+        if ( window.gradeA ) {
+          document.body.className += ' client-js';
+        }
     </script>
     <span id="top"></span>
     $# on form pages e.g. manage-covers, add-cover we do not display the header
