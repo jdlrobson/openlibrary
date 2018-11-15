@@ -91,24 +91,34 @@ $(function(){
             }
         });
 
+        /**
+         *
+         * @param {string} key
+         * @return {jQuery.Object} representing the associated button
+         */
+        function $getCarouselButton(key) {
+            return $(selector + "[data-key='" + key  + "']");
+        }
         getAvailabilityV2('identifier', ocaids, function(response) {
+            var $btn;
             var book_key = null;
             var book_ocaids = null;
             for (var book_ocaid in response) {
                 if (response[book_ocaid].status === "borrow_available") {
                     // check all the books on this page
                     for (book_key in books) {
+                        $btn = $getCarouselButton(book_key);
                         book_ocaids = books[book_key];
                         // check if available book_ocaid is in
                         // this book_key's book_ocaids
                         if (book_ocaids.indexOf(book_ocaid) > -1) {
                             // update icon, ocaid, and url (to ia:)
                             // should limit scope to `selector` ! XXX
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .attr("href", "/borrow/ia/" + book_ocaid);
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .addClass('borrow_available').addClass('cta-btn')
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .text('Borrow');
                             // since we've found an available edition to
                             // represent this book, we can stop and remove
@@ -119,31 +129,33 @@ $(function(){
                     }
                 } else if (response[book_ocaid].status === "borrow_unavailable"){
                     for (book_key in books) {
+                        $btn = $getCarouselButton(book_key);
                         book_ocaids = books[book_key];
                         if (book_ocaids.indexOf(book_ocaid) > -1) {
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .attr('title', 'Join waitlist');
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .addClass('borrow_unavailable').addClass('cta-btn');
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .text('Join Waitlist');
                             delete books[book_key];
                         }
                     }
                 } else {
                     for (book_key in books) {
+                        $btn = $getCarouselButton(book_key);
                         book_ocaids = books[book_key];
                         if (book_ocaids.indexOf(book_ocaid) > -1) {
 
-                            $(selector + "[data-key=" + book_key  + "]")
-                                .attr('href', $(selector + "[data-key=" + book_key  + "]").attr('data-key'))
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
+                                .attr('href', $btn.attr('data-key'))
+                            $btn
                                 .attr('title', 'Check Availability');
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .removeClass('borrow-link');
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .addClass('check-book-availability').addClass('cta-btn');
-                            $(selector + "[data-key=" + book_key  + "]")
+                            $btn
                                 .text('Check Availability');
                             delete books[book_key];
                         }
@@ -261,4 +273,9 @@ $(function(){
         /* eslint-enable no-unused-vars */
         updateBookAvailability();
     }
+
+    // Start initialisation scripts!
+    //
+    // Update the book availability button for any carousels in the page.
+    updateBookAvailability();
 });

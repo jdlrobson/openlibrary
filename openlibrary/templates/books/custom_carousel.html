@@ -1,14 +1,18 @@
 $def with(books=None, title="", url="", key="", min_books=1, test=False)
 
 $def render_carousel_cover(book, lazy):
-  $ url = book.get('key') or book.url
+  $ ia = book.get('ia') or False
+  $if len(ia):
+    $ ia = ia[0]
+  $ book_key = book.get('key')
+  $ url = book_key or book.url
   $ title = book.title
   $if book.get('cover_url'):
     $ cover_url = book.get('cover_url')
   $elif book.get('cover_id'):
     $ cover_url = '%s/b/id/%s-M.jpg'%(cover_host, book.get('cover_id'))
-  $elif book.get('ia'):
-    $ cover_url = '%s/b/ia/%s-M.jpg?default=%s'%(cover_host, book.get('ia'), fallback_cover)
+  $elif ia:
+    $ cover_url = '%s/b/ia/%s-M.jpg?default=%s'%(cover_host, ia, fallback_cover)
   $else:
      $ cover_url = fallback_cover
   $if book.get('authors'):
@@ -22,8 +26,8 @@ $def render_carousel_cover(book, lazy):
     $ modifier = 'borrow-link'
     $ cta_url = '/borrow/ia/%s' % book.ocaid
     $ cta = 'Borrow'
-  $elif book.get('ia') and book.get('public_scan'):
-    $ cta_url = "//archive.org/stream/%s?ref=ol"%book.get('ia')
+  $elif ia and book.get('public_scan'):
+    $ cta_url = "//archive.org/stream/%s?ref=ol"%ia
     $ cta = 'Read eBook'
   $elif book.get('lending_edition'):
     $ cta_url = "/books/%s/x/borrow"%book.get('lending_edition')
@@ -50,8 +54,8 @@ $def render_carousel_cover(book, lazy):
       </a>
     </div>
     $if cta:
-      <div class="book-cta"><a class="btn primary $modifier" href="$cta_url" data-ol-link-track="$key" title="$cta $book.title"
-        data-key="$(key)" data-ocaid="$(book.get('ia'))">$cta</a></div>
+      <div class="book-cta"><a class="btn primary $modifier" href="$cta_url" data-ol-link-track="$book_key" title="$cta $book.title"
+        data-key="$(book_key)" data-ocaid="$(ia)">$cta</a></div>
   </div>
 
 $if test or (books and len(books) >= min_books):
