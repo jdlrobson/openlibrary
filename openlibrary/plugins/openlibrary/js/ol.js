@@ -1,4 +1,4 @@
-var Browser = {
+export var Browser = {
     getJsonFromUrl: function () {
         var query = location.search.substr(1);
         var result = {};
@@ -43,7 +43,7 @@ var Browser = {
     }
 }
 
-function isScrolledIntoView(elem) {
+export function isScrolledIntoView(elem) {
     var docViewTop = $(window).scrollTop();
     var docViewBottom = docViewTop + $(window).height();
     if ($(elem).offset()) {
@@ -53,33 +53,25 @@ function isScrolledIntoView(elem) {
     }
     return false;
 }
-$(window).scroll(function(){
-    var scroller = $("#formScroll");
-    if(isScrolledIntoView(scroller)){$("#scrollBtm").show();}else{$("#scrollBtm").hide();}
-})
 
 // BOOK COVERS
-/* eslint-disable no-unused-vars */
 // used in templates/work_search.html
-function bookCovers(){
+export function bookCovers(){
     $("img.cover").error(function(){
         $(this).closest(".SRPCover").hide();
         $(this).closest(".coverMagic").find(".SRPCoverBlank").show();
     });
 }
-/* eslint-enable no-unused-vars */
 
 // CLOSE POP-UP FROM IFRAME
-/* eslint-disable no-unused-vars */
 // used in templates/covers/saved.html
-function closePop(){
+export function closePop(){
     $("#popClose").click(function(){
         parent.$.fn.colorbox.close();
     });
 }
-/* eslint-enable no-unused-vars */
 
-$(function(){
+export default function init(){
     var $searchResults = $('header#header-bar .search-component ul.search-results');
     var $searchInput = $('header#header-bar .search-component .search-bar-input input[type="text"]');
     var cover_url = function(id) {
@@ -92,6 +84,11 @@ $(function(){
     });
     // but clicking search input should not empty search results.
     $searchInput.on('click', false);
+
+    $(window).scroll(function(){
+        var scroller = $("#formScroll");
+        if(isScrolledIntoView(scroller)){$("#scrollBtm").show();}else{$("#scrollBtm").hide();}
+    });
 
     // Search mode
     var searchModes = ['everything', 'ebooks', 'printdisabled'];
@@ -331,7 +328,6 @@ $(function(){
         }
     }
 
-    /* eslint-disable no-unused-vars */
     // e is a event object
     $('form.search-bar-input').on('submit', function(e) {
         q = $searchInput.val();
@@ -341,7 +337,6 @@ $(function(){
         }
         setMode('.search-bar-input');
     });
-    /* eslint-enable no-unused-vars */
 
 
     $('.search-mode').change(function() {
@@ -367,12 +362,10 @@ $(function(){
         $(this).css('cursor', 'wait');
     });
 
-    /* eslint-disable no-unused-vars */
     // e is a event object
     $(document).on('click','header#header-bar .search-component .search-results li a',debounce(function(event) {
         $(document.body).css({'cursor' : 'wait'});
     }, 300, false));
-    /* eslint-enable no-unused-vars */
 
     $searchInput.on('keyup', debounce(function(e) {
         // ignore directional keys and enter for callback
@@ -404,7 +397,6 @@ $(function(){
         $(this).closest('.arrow').toggleClass("up");
     }, 300, false));
 
-    /* eslint-disable no-unused-vars */
     // success function receives data on successful request
     $('.reading-log-lite select').change(function(e) {
         var self = this;
@@ -428,7 +420,6 @@ $(function(){
         });
         e.preventDefault();
     });
-    /* eslint-enable no-unused-vars */
 
 });
 jQuery.fn.exists = function(){return jQuery(this).length>0;}

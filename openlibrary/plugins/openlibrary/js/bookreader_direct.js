@@ -1,6 +1,5 @@
 // Make Borrow links act as if POSTing to Borrow page
-
-jQuery(function() {
+export default function() {
     $(document).on('click', '.borrow-link', function(event) {
         event.preventDefault();
         var $this = $(this);
@@ -10,10 +9,10 @@ jQuery(function() {
       "<input type='hidden' name='format' value='bookreader' />\n" +
       "<input type='hidden' name='ol_host' value='" + location.host + "' />\n" +
       "</form>";
-        $this.after($(borrowFormString));
-        $this.next().submit();
-        if (window.archive_analytics) {
-            window.archive_analytics.ol_send_event_ping({'category': 'BorrowLink', 'action': 'bookreader'});
-        }
-    });
-});
+    $this.after($(borrowFormString));
+    $this.next().submit();
+    if (window.archive_analytics) {
+        window.archive_analytics.ol_send_event_ping({'category': 'BorrowLink', 'action': 'bookreader'});
+    }
+  });
+};
