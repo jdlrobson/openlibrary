@@ -1,7 +1,7 @@
 import { debounce } from './nonjquery_utils.js';
 import * as Browser from './Browser';
 
-export function isScrolledIntoView(elem) {
+function isScrolledIntoView(elem) {
     var docViewTop = $(window).scrollTop();
     var docViewBottom = docViewTop + $(window).height();
     var elemTop, elemBottom;
@@ -11,23 +11,6 @@ export function isScrolledIntoView(elem) {
         return ((docViewTop < elemTop) && (docViewBottom > elemBottom));
     }
     return false;
-}
-
-// BOOK COVERS
-// used in templates/work_search.html
-export function bookCovers(){
-    $('img.cover').error(function(){
-        $(this).closest('.SRPCover').hide();
-        $(this).closest('.coverMagic').find('.SRPCoverBlank').show();
-    });
-}
-
-// CLOSE POP-UP FROM IFRAME
-// used in templates/covers/saved.html
-export function closePop(){
-    $('#popClose').click(function(){
-        parent.$.fn.colorbox.close();
-    });
 }
 
 export default function init(){
