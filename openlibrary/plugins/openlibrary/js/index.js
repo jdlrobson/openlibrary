@@ -10,8 +10,6 @@ import '../../../../vendor/js/colorbox/1.5.14.js';
 import '../../../../vendor/js/jquery-showpassword/jquery.showpassword.js';
 // jquery.form#2.36 not on npm, no longer getting worked on
 import '../../../../vendor/js/jquery-form/jquery.form.js';
-// jquery-validate#1.6 not on npm
-import '../../../../vendor/js/jquery-validate/jquery.validate.js';
 // jquery-autocomplete#1.1 with modified
 import '../../../../vendor/js/jquery-autocomplete/jquery.autocomplete-modified.js';
 // jquery-flot 0.7.0
@@ -20,7 +18,6 @@ import '../../../../vendor/js/flot/jquery.flot.selection.js';
 import '../../../../vendor/js/flot/jquery.flot.crosshair.js';
 import '../../../../vendor/js/flot/jquery.flot.stack.js';
 import '../../../../vendor/js/flot/jquery.flot.pie.js';
-import { validateEmail, validatePassword } from './account.js';
 import autocompleteInit from './autocomplete';
 import addNewFieldInit from './add_new_field';
 import automaticInit from './automatic';
@@ -42,7 +39,6 @@ import { Subject, urlencode, renderTag, slice } from './subjects';
 import Template from './template.js';
 // Add $.fn.focusNextInputField, $.fn.ol_confirm_dialog, $.fn.tap
 import { closePopup, initShowPasswords, truncate, cond } from './utils';
-import initValidate from './validate';
 import '../../../../static/css/js-all.less';
 // polyfill Promise support for IE11
 import Promise from 'promise-polyfill';
@@ -70,8 +66,6 @@ window.truncate = truncate;
 window.updateBookAvailability = updateBookAvailability;
 window.updateWorkAvailability = updateWorkAvailability;
 window.urlencode = urlencode;
-window.validateEmail = validateEmail;
-window.validatePassword = validatePassword;
 window.websafe = websafe;
 window._ = ugettext;
 window.ungettext = ungettext;
@@ -93,7 +87,6 @@ window.Promise = Promise;
 // Initialise some things
 jQuery(function () {
     const $markdownTextAreas = $('textarea.markdown');
-    initValidate($);
     autocompleteInit($);
     addNewFieldInit($);
     automaticInit($);
@@ -112,5 +105,24 @@ jQuery(function () {
     if (document.getElementsByClassName('editions-table--progressively-enhanced').length) {
         import(/* webpackChunkName: "editions-table" */ './editions-table')
             .then(module => module.initEditionsTable());
+    }
+    // lists/widget.html
+    $.fn.ol_validate = function () {
+        const $query = $(this);
+        if ($query.length) {
+            import(/* webpackChunkName: "form-validation" */ './form-validation')
+                .then(module => {
+                    module.initFormValidation();
+                    $query.ol_validate.apply(this, arguments);
+                });
+        }
+    };
+    if ( $('form.email,#email,form.password,#new_password,#password').length ) {
+        import(/* webpackChunkName: "form-validation" */ './form-validation')
+                .then(module => {
+                    module.validateEmail();
+                    module.validatePassword();
+                });
+        
     }
 });

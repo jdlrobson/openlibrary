@@ -16,6 +16,10 @@
   },
   "bundlesize": [
     {
+      "path": "static/build/form-validation.js",
+      "maxSize": "6.7KB"
+    },
+    {
       "path": "static/build/editions-table.js",
       "maxSize": "16.7KB"
     },
