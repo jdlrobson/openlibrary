@@ -6,7 +6,7 @@ $def with (page)
         <span class="count">$_("First published in %(year)s", year=page.first_publish_year)</span>
     </h2>
     <div class="small sansserif brown">
-      <a href="/books/add?work=$page.key" title="$_('Add another edition of %(worktitle)s', worktitle=page.title)">$_("Add another")</a>?
+      <a href="/books/add?work=$page.key" title="$_('Add another edition of %(work)s', work=page.title)">$_("Add another")</a>?
     </div>
 </div>
 
@@ -35,10 +35,6 @@ $ book_keys = []
 
 $# Added here instead of LoanStatus to avoid the js being bound to every item
 $# in a work's edition listing
-
-$if ctx.user and ctx.user.is_admin():
-    <div class="clearfix"></div>
-    <div class="small sansserif"><span class="adminOnly"><a href="/books/merge?$'&'.join('key=' + k for k in book_keys)">$_('Merge editions')</a></span></div>
 
 <!-- Admin only text doesn't need to be translated -->
 $if ctx.user and ctx.user.is_admin():

@@ -15,7 +15,7 @@ from openlibrary.plugins.upstream.utils import get_history
 from openlibrary.core.helpers import private_collection_in
 from openlibrary.core.bookshelves import Bookshelves
 from openlibrary.core.ratings import Ratings
-from openlibrary.utils.isbn import to_isbn_13, isbn_13_to_isbn_10
+from openlibrary.utils.isbn import to_isbn_13, isbn_13_to_isbn_10, canonical
 from openlibrary.core.vendors import create_edition_from_amazon_metadata
 
 from openlibrary.core.lists.model import ListMixin, Seed
@@ -286,10 +286,6 @@ class Edition(Thing):
         return (('lendinglibrary' in collections or 'inlibrary' in collections)
                 and not self.is_in_private_collection())
 
-    def can_borrow(self):
-        """This method should be deprecated in favor of in_borrowable_collection"""
-        return self.in_borrowable_collection()
-
     def get_waitinglist(self):
         """Returns list of records for all users currently waiting for this book."""
         return waitinglist.get_waitinglist_for_book(self.key)
@@ -414,6 +410,11 @@ class Edition(Thing):
         :rtype: edition|None
         :return: an open library work for this isbn
         """
+        isbn = canonical(isbn)
+
+        if len(isbn) not in [10, 13]:
+            return None  # consider raising ValueError
+
         isbn13 = to_isbn_13(isbn)
         isbn10 = isbn_13_to_isbn_10(isbn)
 
@@ -739,9 +740,6 @@ class User(Thing):
         """
         loan = self.get_loan_for(book)
         return loan is not None
-
-    #def can_borrow_edition(edition, _type):
-
 
     def get_loan_for(self, book):
         """Returns the loan object for given book.

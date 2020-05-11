@@ -20,7 +20,7 @@ from openlibrary import config
 from openlibrary.catalog.utils.query import set_query_host, base_url as get_ol_base_url
 from openlibrary.core import helpers as h
 from openlibrary.core import ia
-from openlibrary.solr.data_provider import get_data_provider
+from openlibrary.solr.data_provider import get_data_provider, DataProvider
 from openlibrary.utils.isbn import opposite_isbn
 
 logger = logging.getLogger("openlibrary.solr")
@@ -37,6 +37,7 @@ data_provider = None
 _ia_db = None
 
 solr_host = None
+
 
 def urlopen(url, data=None):
     version = "%s.%s.%s" % sys.version_info[:3]
@@ -234,7 +235,7 @@ def four_types(i):
     """
     want = {'subject', 'time', 'place', 'person'}
     ret = dict((k, i[k]) for k in want if k in i)
-    for j in (j for j in i.keys() if j not in want):
+    for j in (j for j in i if j not in want):
         for k, v in i[j].items():
             if 'subject' in ret:
                 ret['subject'][k] = ret['subject'].get(k, 0) + v
@@ -792,12 +793,13 @@ def build_data2(w, editions, authors, ia, duplicates):
     for k in 'person', 'place', 'subject', 'time':
         if k not in subjects:
             continue
-        add_field_list(doc, k, subjects[k].keys())
-        add_field_list(doc, k + '_facet', subjects[k].keys())
-        subject_keys = [str_to_key(s) for s in subjects[k].keys()]
+        subjects_k_keys = list(subjects[k])
+        add_field_list(doc, k, subjects_k_keys)
+        add_field_list(doc, k + '_facet', subjects_k_keys)
+        subject_keys = [str_to_key(s) for s in subjects_k_keys]
         add_field_list(doc, k + '_key', subject_keys)
 
-    for k in sorted(identifiers.keys()):
+    for k in sorted(identifiers):
         add_field_list(doc, 'id_' + k, identifiers[k])
 
     if ia_loaded_id:
@@ -977,7 +979,7 @@ class UpdateRequest:
         node = dict2element(self.doc)
         root = Element("add")
         root.append(node)
-        return tostring(root).encode('utf-8')
+        return tostring(root, encoding="unicode")
 
     def tojson(self):
         """
@@ -1183,7 +1185,7 @@ def make_delete_query(keys):
     for key in keys:
         query = SubElement(delete_query,'query')
         query.text = 'key:%s' % key
-    return tostring(delete_query)
+    return tostring(delete_query, encoding="unicode")
 
 def update_author(akey, a=None, handle_redirects=True):
     """
@@ -1294,7 +1296,8 @@ def solr_select_work(edition_key):
     if docs:
         return docs[0]['key'] # /works/ prefix is in solr
 
-def update_keys(keys, commit=True, output_file=None):
+
+def update_keys(keys, commit=True, output_file=None, commit_way_later=False):
     """
     Insert/update the documents with the provided keys in Solr.
 
@@ -1303,8 +1306,17 @@ def update_keys(keys, commit=True, output_file=None):
     :param str output_file: If specified, will save all update actions to output_file **instead** of sending to Solr.
         Each line will be JSON object.
         FIXME Updates to editions/subjects ignore output_file and will be sent (only) to Solr regardless.
+    :param bool commit_way_later: set to true if you want to add things quickly and add
+        them much later
     """
     logger.info("BEGIN update_keys")
+    commit_way_later_dur = 1000 * 60 * 60 * 24 * 5  # 5 days?
+
+    def _solr_update(requests, debug=False, commitWithin=60000):
+        if commit_way_later:
+            return solr_update(requests, debug, commit_way_later_dur)
+        else:
+            return solr_update(requests, debug, commitWithin)
 
     global data_provider
     global _ia_db
@@ -1388,7 +1400,7 @@ def update_keys(keys, commit=True, output_file=None):
                         f.write(r.tojson())
                         f.write("\n")
         else:
-            solr_update(requests, debug=True)
+            _solr_update(requests, debug=True)
 
     # update editions
     requests = []
@@ -1401,7 +1413,7 @@ def update_keys(keys, commit=True, output_file=None):
     if requests:
         if commit:
             requests += ['<commit/>']
-        solr_update(requests, debug=True)
+        _solr_update(requests, debug=True)
 
     # update authors
     requests = []
@@ -1426,7 +1438,7 @@ def update_keys(keys, commit=True, output_file=None):
             #solr_update(requests, debug=True)
             if commit:
                 requests += ['<commit />']
-            solr_update(requests, debug=True, commitWithin=1000)
+            _solr_update(requests, debug=True, commitWithin=1000)
 
     # update subjects
     skeys = set(k for k in keys if k.startswith("/subjects/"))
@@ -1440,7 +1452,7 @@ def update_keys(keys, commit=True, output_file=None):
     if requests:
         if commit:
             requests += ['<commit />']
-        solr_update(requests, debug=True)
+        _solr_update(requests, debug=True)
 
     logger.info("END update_keys")
 
@@ -1470,12 +1482,15 @@ def load_configs(c_host, c_config, c_data_provider='default'):
     load_config(c_config)
 
     global _ia_db
-    if 'ia_db' in config.runtime_config.keys():
+    if 'ia_db' in config.runtime_config:
         _ia_db = get_ia_db(config.runtime_config['ia_db'])
 
     global data_provider
     if data_provider is None:
-        data_provider = get_data_provider(c_data_provider, _ia_db)
+        if isinstance(c_data_provider, DataProvider):
+            data_provider = c_data_provider
+        else:
+            data_provider = get_data_provider(c_data_provider, _ia_db)
     return data_provider
 
 def get_ia_db(settings):
@@ -1497,7 +1512,9 @@ def parse_args():
     parser.add_argument("-o", "--output-file", help="Open Library config file")
     parser.add_argument("--nocommit", action="store_true", help="Don't commit to solr")
     parser.add_argument("--profile", action="store_true", help="Profile this code to identify the bottlenecks")
-    parser.add_argument("--data-provider", default='default', help="Name of the data provider to use")
+    parser.add_argument("--data-provider", default='default',
+                        choices=['default', 'legacy'],
+                        help="Name of the data provider to use")
 
     return parser.parse_args()
 
